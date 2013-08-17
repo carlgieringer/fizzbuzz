@@ -2,15 +2,18 @@
 
 namespace FizzBuzz
 {
+    using System.Diagnostics;
     using System.Text.RegularExpressions;
 
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static readonly Regex ContinueChoiceRegex = new Regex("[^Nn]");
+
+        private static void Main(string[] args)
         {
-            var continueChoiceRegex = new Regex("[^Nn]");
+            var timer = new Stopwatch();
             string choice = "Y";
-            while (continueChoiceRegex.IsMatch(choice))
+            while (ContinueChoiceRegex.IsMatch(choice))
             {
                 Console.WriteLine("FizzBuzz");
 
@@ -32,7 +35,7 @@ namespace FizzBuzz
                 }
                 while (!long.TryParse(endIn, out end));
 
-                DateTime began = DateTime.Now;
+                timer.Restart();
                 try
                 {
                     string fizzBuzz = FizzBuzz(start, end);
@@ -41,9 +44,9 @@ namespace FizzBuzz
                 {
                     Console.WriteLine("Error: {0}", ex.Message);
                 }
-                DateTime finished = DateTime.Now;
-
-                TimeSpan elapsed = finished - began;
+                
+                timer.Stop();
+                TimeSpan elapsed = timer.Elapsed;
                 Console.WriteLine("Elapsed: {0}", elapsed);
 
                 Console.Write("Repeat? [Y/n]: ");
@@ -53,12 +56,12 @@ namespace FizzBuzz
             }
         }
 
-        public static string FizzBuzz(long start, long end)
+        private static string FizzBuzz(long start, long end)
         {
-            return FizzBuzzSavvy(start, end);
+            return FizzBuzzNaive(start, end);
         }
 
-        public static string FizzBuzzNaive(long start, long end)
+        private static string FizzBuzzNaive(long start, long end)
         {
             string result = "";
 
@@ -85,7 +88,7 @@ namespace FizzBuzz
             return result;
         }
         
-        public static string FizzBuzzSavvy(long start, long end)
+        private static string FizzBuzzSavvy(long start, long end)
         {
             const long MaxArraySize = int.MaxValue;
             long count = end - start + 1;
